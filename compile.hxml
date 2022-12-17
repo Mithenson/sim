@@ -1,0 +1,5 @@
+-cp src
+-lib heaps
+-lib hldx
+-hl sim.hl
+-main Main

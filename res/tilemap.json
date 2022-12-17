@@ -1,0 +1,34 @@
+{
+    "tileWidth": 16,
+    "tileHeight": 16,
+    "padding": 1,
+    "tileDefinitions": [
+        {
+            "kind": "Ground",
+            "cells": [
+                {
+                    "x": 0,
+                    "y": 0
+                }
+            ]
+        },
+        {
+            "kind": "Water",
+            "cells": [
+                {
+                    "x": 8,
+                    "y": 5
+                }
+            ]
+        },
+        {
+            "kind": "Grass",
+            "cells": [
+                {
+                    "x": 5,
+                    "y": 0
+                }
+            ]
+        }
+    ]
+}

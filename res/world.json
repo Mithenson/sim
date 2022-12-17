@@ -1,0 +1,8 @@
+{
+   "resolution": 80,
+   "layers": 4,
+    "landMass":  {
+        "seaLevel": -0.5,
+        "octaves": 4
+    }
+}
