@@ -1,12 +1,19 @@
 typedef WorldDefinition = {
-    var resolution:Float;
     var layers:Int;
     var landMass:LandmassDefinition;
+    var decor:DecorDefinition;
 }
 
 typedef LandmassDefinition = {
-    var seaLevel:Float;
+    var resolution:Float;
     var octaves:Int;
+    var seaLevel:Float;
+}
+
+typedef DecorDefinition = {
+    var resolution:Float;
+    var octaves:Int;
+    var ranges:Array<{min:Float, max:Float, chance:Int, kind:String}>;
 }
 
 class World{
@@ -14,10 +21,9 @@ class World{
     public var y(default, null):Int;
     public var width(default, null):Int;
     public var height(default, null):Int;
-    public var seed(default, null):Int;
 
     var noise:hxd.Perlin;
-    var cells:Array<Cell>;
+    var cells:Array<Array<Cell>>;
     var layers:h2d.Layers;
     var groups:Array<h2d.TileGroup>;
 
@@ -27,17 +33,29 @@ class World{
         this.width = width;
         this.height = height;
 
-        var now = Date.now();
-        seed = Std.random(now.getHours() + now.getMinutes() + now.getSeconds());
         noise = new hxd.Perlin();
-
+        noise.normalize = true;
         cells = [];
+
+        var landmassSeed = Std.random(2147483647);
         for(ix in 0...width){
+            var column = [];
             for(iy in 0...height){
                 var cx = x + ix;
                 var cy = y + iy;
-                var base = generateLandmass(cx, cy, getLandmassDefinition());
-                cells.push(new Cell(cx, cy, base));
+                var base = generateLandmass(landmassSeed, cx, cy, Data.worldDefinition.landMass);
+                column.push(new Cell(cx, cy, base));
+            }
+            cells.push(column);
+        }
+
+        var decorSeed = Std.random(2147483647);
+        for (x in 0...cells.length){
+            for (y in 0...cells[x].length){
+                var decor = generateDecor(decorSeed, x, y, Data.worldDefinition.decor);
+                if (decor == null)
+                    continue;
+                cells[x][y].addEntity(decor);
             }
         }
 
@@ -49,15 +67,11 @@ class World{
             groups.push(group);
         }  
     }
-
-    function getLandmassDefinition() return Data.worldDefinition.landMass;
     
-    function generateLandmass(x:Float, y:Float, def:LandmassDefinition):Base{
-        var res = Data.worldDefinition.resolution;
-        var surface = noise.perlin(seed, x / res, y / res, def.octaves);
-
+    function generateLandmass(seed:Int, x:Int, y:Int, def:LandmassDefinition):Base{
+        var val = noise.perlin(seed, x /def.resolution, y / def.resolution, def.octaves);
         var kind:TileKind;
-        if (surface < def.seaLevel)
+        if (val < def.seaLevel)
             kind = TileKind.Water;
         else 
             kind = TileKind.Ground;
@@ -65,15 +79,36 @@ class World{
         return new Base(Data.tilemap.tiles[kind]);
     }
 
+    function generateDecor(seed:Int, x:Int, y:Int, def:DecorDefinition){
+        if (cells[x][y].base.kind == TileKind.Water)
+            return null;
+
+        var val = noise.perlin(seed, x / def.resolution, y / def.resolution, def.octaves);
+        trace("a");
+        for(range in def.ranges){
+            if (val >= range.min && val <= range.max){
+                var rand = Std.random(100);
+                if (rand > range.chance)
+                    continue;
+                
+                var kind = TileKind.createByName(range.kind);
+                return new Entity(Data.tilemap.tiles[kind]);
+            }
+        }
+        return null;
+    }
+
     public function tick(){
         for (group in groups)
             group.clear();
         
-        for (cell in cells){
-            var p = new h2d.col.Point(cell.x * Data.tilemap.tileWidth, cell.y * Data.tilemap.tileHeight);
-            var visuals = cell.getVisuals();
-            for (i in 0...visuals.length)
-                groups[i].add(p.x, p.y, visuals[i]);
+        for (column in cells){
+            for(cell in column){
+                var p = new h2d.col.Point(cell.x * Data.tilemap.tileWidth, cell.y * Data.tilemap.tileHeight);
+                var entities = cell.getEntities();
+                for (i in 0...entities.length)
+                    groups[i].add(p.x, p.y, entities[i].visual);
+            }
         }
     }
 }

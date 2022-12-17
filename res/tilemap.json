@@ -16,17 +16,26 @@
             "kind": "Water",
             "cells": [
                 {
-                    "x": 8,
-                    "y": 5
+                    "x": 0,
+                    "y": 6
                 }
             ]
         },
         {
-            "kind": "Grass",
+            "kind": "Tree",
             "cells": [
                 {
-                    "x": 5,
-                    "y": 0
+                    "x": 0,
+                    "y": 1
+                }
+            ]
+        },
+        {
+            "kind": "Mountain",
+            "cells": [
+                {
+                    "x": 0,
+                    "y": 4
                 }
             ]
         }

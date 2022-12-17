@@ -1,8 +1,26 @@
 {
-   "resolution": 80,
    "layers": 4,
     "landMass":  {
-        "seaLevel": -0.5,
-        "octaves": 4
+        "resolution": 80,
+        "octaves": 4,
+        "seaLevel": -0.3
+    },
+    "decor": {
+        "resolution": 50,
+        "octaves": 3,
+        "ranges":[
+            {
+                "min": -0.4,
+                "max": 0.2,
+                "chance": 3,
+                "kind": "Tree"
+            },
+            {
+                "min": 0.325,
+                "max": 1,
+                "chance": 100,
+                "kind": "Mountain"
+            }
+        ]
     }
 }

@@ -1,5 +1,6 @@
 enum TileKind{
     Ground;
     Water;
-    Grass;
+    Tree;
+    Mountain;
 }
