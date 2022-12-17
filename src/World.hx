@@ -1,5 +1,3 @@
-import h2d.col.Point;
-
 typedef WorldDefinition = {
     var resolution:Float;
     var layers:Int;
