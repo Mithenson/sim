@@ -7,24 +7,41 @@ class World{
     public var y(default, null):Int;
     public var width(default, null):Int;
     public var height(default, null):Int;
+    public var bounds(get, never):h2d.col.Bounds;
 
+    var def:WorldDefinition;
     var noise:hxd.Perlin;
     var generators:Array<Array<gen.IGenerator>>;
     var cells:Array<Array<Cell>>;
     var layers:h2d.Layers;
     var groups:Array<h2d.TileGroup>;
 
-    public function new(x:Int, y:Int, width:Int, height:Int, generators:Array<Array<gen.IGenerator>>, parent:h2d.Object){
+    public function new(x:Int, y:Int, width:Int, height:Int, generators:Array<Array<gen.IGenerator>>){
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.generators = generators;
 
+        def = Data.worldDefinition;
         noise = new hxd.Perlin();
         noise.normalize = true;
         cells = [];
+    }
 
+    public function init(parent:h2d.Object){
+        generate(parent);
+        tick();
+    }
+
+    function get_bounds(){
+        var bounds = groups[0].getBounds();
+        for(i in 1...groups.length)
+            bounds.addBounds(groups[i].getBounds());
+        return bounds;
+    }
+
+    function generate(parent:h2d.Object){
         for(ix in 0...width){
             var column = [];
             for(iy in 0...height){
@@ -72,4 +89,6 @@ class World{
             }
         }
     }
+
+    public function dispose() { }
 }

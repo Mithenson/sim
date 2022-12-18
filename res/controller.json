@@ -1,0 +1,6 @@
+{
+    "cameraSpeed": 500,
+    "zoomSpeed": 0.1,
+    "minZoom": 0.25,
+    "maxZoom": 2
+}
