@@ -1,3 +1,5 @@
+package ent;
+
 class Entity{
     public var visual(default, null):h2d.Tile;
     public var kind(default, null):Kind;

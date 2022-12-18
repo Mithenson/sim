@@ -18,8 +18,8 @@ class LandmassGenerator implements IGenerator{
     public function generate(cell:Cell, noise:hxd.Perlin){
         var val = noise.perlin(seed, cell.x / def.resolution, cell.y / def.resolution, def.octaves);
         if (val < def.seaLevel)
-            return new GenerationOutput(new Base(Data.getTile(Kind.Water)));
+            return new GenerationOutput(new ent.Base(Data.getTile(Kind.Water)));
         else 
-            return new GenerationOutput(new Base(Data.getTile(Kind.Ground)));
+            return new GenerationOutput(new ent.Base(Data.getTile(Kind.Ground)));
     }
 }

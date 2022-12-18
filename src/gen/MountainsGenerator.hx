@@ -21,7 +21,7 @@ class MountainsGenerator implements IGenerator {
             return GenerationOutput.skip;
         var val = noise.perlin(seed, cell.x / def.resolution, cell.y / def.resolution, def.octaves);
         if (val >= def.min && val <= def.max)
-            return new GenerationOutput(new Entity(Data.getTile(Kind.Mountain)), true);
+            return new GenerationOutput(new ent.Entity(Data.getTile(Kind.Mountain)), true);
         return GenerationOutput.skip;
     }
 }

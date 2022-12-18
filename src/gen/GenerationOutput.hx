@@ -1,10 +1,10 @@
 package gen;
 
 class GenerationOutput{
-    public var entity:Entity;
+    public var entity:ent.Entity;
     public var stop:Bool;
 
-    public function new(entity:Entity, ?stop:Bool){
+    public function new(entity:ent.Entity, ?stop:Bool){
         this.entity = entity;
         if (stop == null)
             stop = false;
