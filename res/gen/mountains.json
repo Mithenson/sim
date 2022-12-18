@@ -1,0 +1,9 @@
+{
+    "kind": "Mountains",
+    "value":{
+        "resolution": 50,
+        "octaves": 3,
+        "min": 0.4,
+        "max": 1
+    }
+}

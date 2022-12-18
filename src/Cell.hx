@@ -6,11 +6,11 @@ class Cell{
 
     var entities:Array<Entity>;
 
-    public function new(x:Int, y:Int, base:Base){
+    public function new(x:Int, y:Int){
         this.x = x;
         this.y = y;
 
-        entities = [base];
+        entities = [];
     }
 
     function get_count() return entities.length;

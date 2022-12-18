@@ -4,12 +4,12 @@ typedef TileDefinition = {
 }
 
 class Tile{
-    public var kind:TileKind;
+    public var kind:Kind;
 
     var variants:Array<h2d.Tile>;
 
     public function new(src:h2d.Tile, mapDef:Tilemap.TilemapDefinition, def:TileDefinition) {
-        kind = TileKind.createByName(def.kind);
+        kind = Kind.createByName(def.kind);
         variants = [];
         for(cell in def.cells)
             variants.push(src.sub(cell.x * (mapDef.tileWidth + mapDef.padding), cell.y * (mapDef.tileHeight + mapDef.padding), mapDef.tileWidth, mapDef.tileHeight));

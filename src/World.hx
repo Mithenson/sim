@@ -1,19 +1,5 @@
 typedef WorldDefinition = {
     var layers:Int;
-    var landMass:LandmassDefinition;
-    var decor:DecorDefinition;
-}
-
-typedef LandmassDefinition = {
-    var resolution:Float;
-    var octaves:Int;
-    var seaLevel:Float;
-}
-
-typedef DecorDefinition = {
-    var resolution:Float;
-    var octaves:Int;
-    var ranges:Array<{min:Float, max:Float, chance:Int, kind:String}>;
 }
 
 class World{
@@ -23,39 +9,44 @@ class World{
     public var height(default, null):Int;
 
     var noise:hxd.Perlin;
+    var generators:Array<Array<gen.IGenerator>>;
     var cells:Array<Array<Cell>>;
     var layers:h2d.Layers;
     var groups:Array<h2d.TileGroup>;
 
-    public function new(x:Int, y:Int, width:Int, height:Int, parent:h2d.Object){
+    public function new(x:Int, y:Int, width:Int, height:Int, generators:Array<Array<gen.IGenerator>>, parent:h2d.Object){
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.generators = generators;
 
         noise = new hxd.Perlin();
         noise.normalize = true;
         cells = [];
 
-        var landmassSeed = Std.random(2147483647);
         for(ix in 0...width){
             var column = [];
             for(iy in 0...height){
                 var cx = x + ix;
                 var cy = y + iy;
-                var base = generateLandmass(landmassSeed, cx, cy, Data.worldDefinition.landMass);
-                column.push(new Cell(cx, cy, base));
+                column.push(new Cell(cx, cy));
             }
             cells.push(column);
         }
 
-        var decorSeed = Std.random(2147483647);
-        for (x in 0...cells.length){
-            for (y in 0...cells[x].length){
-                var decor = generateDecor(decorSeed, x, y, Data.worldDefinition.decor);
-                if (decor == null)
-                    continue;
-                cells[x][y].addEntity(decor);
+        for(pass in generators){
+            for(x in 0...cells.length){
+                for(y in 0...cells[x].length){
+                    for(generator in pass){
+                        var cell = cells[x][y];
+                        var output = generator.generate(cell, noise);
+                        if (output.entity != null)
+                            cell.addEntity(output.entity);
+                        if (output.stop)
+                            break;
+                    }
+                }
             }
         }
 
@@ -66,36 +57,6 @@ class World{
             layers.add(group, i);
             groups.push(group);
         }  
-    }
-    
-    function generateLandmass(seed:Int, x:Int, y:Int, def:LandmassDefinition):Base{
-        var val = noise.perlin(seed, x /def.resolution, y / def.resolution, def.octaves);
-        var kind:TileKind;
-        if (val < def.seaLevel)
-            kind = TileKind.Water;
-        else 
-            kind = TileKind.Ground;
-
-        return new Base(Data.tilemap.tiles[kind]);
-    }
-
-    function generateDecor(seed:Int, x:Int, y:Int, def:DecorDefinition){
-        if (cells[x][y].base.kind == TileKind.Water)
-            return null;
-
-        var val = noise.perlin(seed, x / def.resolution, y / def.resolution, def.octaves);
-        trace("a");
-        for(range in def.ranges){
-            if (val >= range.min && val <= range.max){
-                var rand = Std.random(100);
-                if (rand > range.chance)
-                    continue;
-                
-                var kind = TileKind.createByName(range.kind);
-                return new Entity(Data.tilemap.tiles[kind]);
-            }
-        }
-        return null;
     }
 
     public function tick(){

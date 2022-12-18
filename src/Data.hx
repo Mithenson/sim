@@ -3,6 +3,7 @@ class Data {
     public static var tilemap_png:h2d.Tile;
     public static var tilemap:Tilemap;
     public static var worldDefinition:World.WorldDefinition;
+    public static var generatorDefinitions:Map<gen.GeneratorKind, Dynamic>;
 
     public static function init(){
         appDefinition = haxe.Json.parse(hxd.Res.app.entry.getText());
@@ -13,5 +14,16 @@ class Data {
         tilemap = new Tilemap(tilemap_png, mapDef);
 
         worldDefinition = haxe.Json.parse(hxd.Res.world.entry.getText());
+
+        generatorDefinitions = new Map();
+        for(sub in hxd.Res.load('gen')){
+            if (sub.entry.extension != 'json')
+                continue;
+            var def:gen.IGenerator.GeneratorDefinition = haxe.Json.parse(sub.entry.getText());
+            var kind = gen.GeneratorKind.createByName(def.kind);
+            generatorDefinitions.set(kind, def.value);
+        }
     }
+
+    public static function getTile(kind:Kind) return tilemap.tiles[kind];
 }

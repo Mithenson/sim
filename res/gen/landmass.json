@@ -1,0 +1,8 @@
+{
+    "kind": "Landmass",
+    "value":{
+        "resolution": 80,
+        "octaves": 4,
+        "seaLevel": -0.2
+    }
+}

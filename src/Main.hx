@@ -15,7 +15,21 @@ class Main extends hxd.App {
         super.init();
         Data.init();
 
-        world = new World(0, 0, 250, 250, s2d);
+        world = new World(
+            0, 
+            0, 
+            250, 
+            250, 
+            [
+                [
+                    new gen.LandmassGenerator()
+                ],
+                [
+                    new gen.MountainsGenerator(),
+                    new gen.TreesGenerator()
+                ]
+            ],
+            s2d);
         fitWindowToWorld(0.2);
     }
 

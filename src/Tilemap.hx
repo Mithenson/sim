@@ -8,7 +8,7 @@ typedef TilemapDefinition = {
 class Tilemap{
     public var tileWidth(get, null):Int;
     public var tileHeight(get, null):Int;
-    public var tiles:Map<TileKind, Tile>;
+    public var tiles:Map<Kind, Tile>;
 
     public function new(src:h2d.Tile, def:TilemapDefinition){
         tileWidth = def.tileWidth;

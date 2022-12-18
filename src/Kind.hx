@@ -1,4 +1,4 @@
-enum TileKind{
+enum Kind{
     Ground;
     Water;
     Tree;
